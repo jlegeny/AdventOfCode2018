@@ -15,10 +15,6 @@ struct Position {
 
 var positions: [Position] = []
 
-var posbyx: [Int:[Position]] = [:]
-var posbyy: [Int:[Position]] = [:]
-
-
 var mx = 0
 var my = 0
 var id = 0
@@ -36,20 +32,11 @@ lines.dropLast().forEach {
   my = max(my, y)
  }
 
-//positions.forEach {
-//  print($0)
-//}
-
 func dist(_ p1: (Int, Int), _ p2: (Int, Int)) -> Int {
   return abs(p1.0 - p2.0) + abs(p1.1 - p2.1)
 }
 
-let sortedx = posbyx.keys.sorted
-let sortedy = posbyy.keys.sorted
-
 var m = [[Int]](repeating: [Int](repeating: 0, count: my + 1), count: mx + 1)
-//var t = [[Int]](repeating: [Int](repeating: 0, count: my + 1), count: mx + 1)
-
 
 var tmax = 0
 for x in 0...mx {
@@ -59,7 +46,6 @@ for x in 0...mx {
     var t = 0
     for p in positions {
       let d = dist((x, y), (p.x, p.y))
-      //t[x][y] += d
       t += d
       if d < mindist {
         mindist = d
@@ -83,9 +69,7 @@ positions.forEach {
 }
 
 for y in 0...my {
-  //var l = ""
   for x in 0...mx {
-    //l += "\(t[x][y])  "
     let id = m[x][y]
     if id != 0 {
       a[id]! += 1
@@ -94,7 +78,6 @@ for y in 0...my {
       }
     }
   }
-  //print(l)
 }
 
 var maxa = 0

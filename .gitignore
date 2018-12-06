@@ -1,0 +1,5 @@
+*
+!.gitignore
+!*swift
+!input*test.txt
+
