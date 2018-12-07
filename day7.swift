@@ -10,11 +10,9 @@ let baseDuration = 60
 let workers = 5
 
 class Node {
-  let c: String
   var time: Int
   var p = Set<String>()
   init(c: String) {
-    self.c = c
     self.time = baseDuration + Int(c.unicodeScalars.first!.value) - Int("A".unicodeScalars.first!.value) + 1
   }
 }
