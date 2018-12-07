@@ -11,26 +11,22 @@ let workers = 5
 
 class Node {
   var time: Int
-  var p = Set<String>()
-  init(c: String) {
+  var p = Set<Character>()
+  init(c: Character) {
     self.time = baseDuration + Int(c.unicodeScalars.first!.value) - Int("A".unicodeScalars.first!.value) + 1
   }
 }
 
-var nodes1: [String:Node] = [:]
-var nodes2: [String:Node] = [:]
+var nodes1: [Character:Node] = [:]
+var nodes2: [Character:Node] = [:]
 
 let regex = try! NSRegularExpression(pattern: "Step (.) must be finished before step (.) can begin.", options: [])
 
-for line in lines {
-  guard let m = regex.matches(in: line, options: [], range: NSRange(location: 0, length: line.utf16.count)).first else {
-    break
-  }
+for line in lines.dropLast() {
+  let req = line[line.index(line.startIndex, offsetBy: 5)]
+  let step = line[line.index(line.startIndex, offsetBy: 36)]
 
-  let req = String(line[Range(m.range(at: 1), in: line)!])
-  let step = String(line[Range(m.range(at: 2), in: line)!])
-
-  func addTo(_ dict: inout [String:Node]) {
+  func addTo(_ dict: inout [Character:Node]) {
     if dict[step] == nil {
       dict[step] = Node(c: step)
     }
