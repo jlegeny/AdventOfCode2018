@@ -19,7 +19,7 @@ class Node {
   }
 }
 
-var nodes: [String:Node] = [:]
+var nodes1: [String:Node] = [:]
 var nodes2: [String:Node] = [:]
 
 let regex = try! NSRegularExpression(pattern: "Step (.) must be finished before step (.) can begin.", options: [])
@@ -32,36 +32,34 @@ for line in lines {
   let req = String(line[Range(m.range(at: 1), in: line)!])
   let step = String(line[Range(m.range(at: 2), in: line)!])
 
-  if nodes[step] == nil {
-    let node = Node(c: step)
-    nodes[step] = node
-    let node2 = Node(c: step)
-    nodes2[step] = node2
+  func addTo(_ dict: inout [String:Node]) {
+    if dict[step] == nil {
+      dict[step] = Node(c: step)
+    }
+
+    if dict[req] == nil {
+      dict[req] = Node(c: req)
+    }
+
+    dict[step]!.p.insert(req)
   }
 
-  if nodes[req] == nil {
-    let node = Node(c: req)
-    nodes[req] = node
-    let node2 = Node(c: req)
-    nodes2[req] = node2
-  }
+  addTo(&nodes1)
+  addTo(&nodes2)
 
-  nodes[step]!.p.insert(req)
-  nodes2[step]!.p.insert(req)
 }
 
 // Part 1
 do {
-  var orderedKeys = nodes.keys.sorted()
+  var nodes = nodes1
   var chain = ""
 
+  var orderedKeys = nodes.keys.sorted()
   while nodes.count > 0 {
 
     for key in orderedKeys {
       if nodes[key]!.p.isEmpty {
-        for n in nodes {
-          n.value.p.remove(key) 
-        }
+        nodes.values.forEach { $0.p.remove(key) }
         nodes[key] = nil
         orderedKeys = nodes.keys.sorted()
         chain.append(key)
@@ -73,37 +71,32 @@ do {
 }
 
 // Part 2
-
 do {
-  var orderedKeys = nodes2.keys.sorted()
+  var nodes = nodes2
   var duration = 0
 
-  while nodes2.count > 0 {
+  var orderedKeys = nodes.keys.sorted()
+  while nodes.count > 0 {
 
     var available = workers
     for key in orderedKeys {
       if available == 0 {
         break
       }
-      let node = nodes2[key]!
-      if node.p.isEmpty {
+      if let node = nodes[key], node.p.isEmpty {
         node.time -= 1
         available -= 1
       }
     }
     duration += 1
-    for node in nodes2 {
-      if node.value.time == 0 {
-        for n in nodes2 {
-          if n.value.p.contains(node.key) {
-            n.value.p.remove(node.key)
-          }
-        }
-      }
+    nodes.filter({ $0.value.time == 0 }).keys.forEach {
+      k in nodes.values.forEach { $0.p.remove(k) }
     }
-    nodes2 = nodes2.filter({ $0.value.time > 0 })
-    orderedKeys = nodes2.keys.sorted()
+    nodes = nodes.filter({ $0.value.time > 0 })
+    orderedKeys = nodes.keys.sorted()
   }
 
   print(duration)
 }
+
+
