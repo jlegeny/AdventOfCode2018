@@ -1,6 +1,6 @@
 import Foundation
 
-let path = URL(fileURLWithPath: "input-day8-test.txt")
+let path = URL(fileURLWithPath: "input-day8.txt")
 
 guard let input = (try? String(contentsOf: path)) else {
   fatalError("failed to read \(path)")
@@ -9,15 +9,12 @@ guard let input = (try? String(contentsOf: path)) else {
 class Node {
   var ccount: Int
   var mcount: Int
-  var value: Int
-  var c: [Node]
-  var m: [Int]
+  var value: Int = 0
+  var c: [Node] = []
+  var m: [Int] = []
   init(_ ccount: Int, _ mcount: Int) {
     self.ccount = ccount
     self.mcount = mcount
-    value = 0
-    c = []
-    m = []
   }
 }
 
@@ -48,13 +45,9 @@ loop: while true {
     let ccount = readInt()
     let mcount = readInt()
     let new = Node(ccount, mcount)
-    if let cnode = stack.last {
-      cnode.c.append(new)
-    }
+    stack.last?.c.append(new)
     stack.append(new)
-    if ccount == 0 {
-      state = .readingMetadata
-    } 
+    state = ccount == 0 ? .readingMetadata : .readingHeader
   case .readingMetadata:
     let data = readInt()
     mdsum += data
@@ -64,27 +57,16 @@ loop: while true {
       if node.c.count == 0 {
         node.value = node.m.reduce(0, +)
       } else {
-        for m in node.m {
-          if m - 1 < node.c.count {
-            node.value += node.c[m - 1].value
-          }
-        }
+        node.value = node.m.reduce(0, { $0 + ($1 - 1 < node.c.count ? node.c[$1 - 1].value : 0) })
       }
       let last = stack.removeLast()
-      if let cn = stack.last {
-        if cn.c.count < cn.ccount {
-          state = .readingHeader
-        } else {
-          state = .readingMetadata
-        }
-      } else {
+      guard let cn = stack.last else {
         print(last.value)
         break loop
       }
+      state = cn.c.count < cn.ccount ? .readingHeader : .readingMetadata
     }
   }
-    
-    
 }
 
 print(mdsum)
