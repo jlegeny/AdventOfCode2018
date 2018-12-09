@@ -39,28 +39,28 @@ func insert(score: Int, current: inout Marble) -> Int {
     before.left = current
     return 0
   } else {
-    var remove = current
-    for _ in 0...6 {
-      remove = remove.left
-    }
+    let remove = current.left.left.left.left.left.left.left!
     remove.left.right = remove.right
     remove.right.left = remove.left
     current = remove.right
-    let points = score + remove.score
-    return points
+    return score + remove.score
   }
 }
 
-for m in [1, 100] {
-  var players = [Int](repeating: 0, count: playerCount)
-  var current = Marble()
+var players = [Int](repeating: 0, count: playerCount)
+var current = Marble()
 
-  var cm = 1
-  repeat {
-    players[cm % playerCount] += insert(score: cm, current: &current)
-    cm += 1
-  } while cm != lastMarble * m
+var cm = 1
+repeat {
+  players[cm % playerCount] += insert(score: cm, current: &current)
+  cm += 1
+} while cm != lastMarble
 
-  let highscore = players.reduce(0, max)
-  print(highscore)
-}
+print(players.reduce(0, max))
+
+repeat {
+  players[cm % playerCount] += insert(score: cm, current: &current)
+  cm += 1
+} while cm != lastMarble * 100
+
+print(players.reduce(0, max))
