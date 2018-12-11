@@ -1,6 +1,6 @@
 import Foundation
 
-let path = URL(fileURLWithPath: "input-day9.txt")
+let path = URL(fileURLWithPath: "input-day9-test.txt")
 
 guard let input = (try? String(contentsOf: path)) else {
   fatalError("failed to read \(path)")
