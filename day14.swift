@@ -16,7 +16,6 @@ do {
   var ia = 0
   var ib = 1
 
-  // part 1
   let after = 503761
   repeat {
     r += split(r[ia] + r[ib])
@@ -34,7 +33,6 @@ do {
   var ia = 0
   var ib = 1
 
-  // part 2
   let pattern = 503761
   let order = 1000000
   var c = 37
