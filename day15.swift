@@ -171,12 +171,12 @@ func move(_ map: inout [[Tile]], _ x: Int, _ y: Int) -> Node? {
     var minx = 0
     var miny = 0
     var mind = Int.max
-    #if PRINT
+    #if PRINT_PATHFINDING
     var ld = ""
     #endif
     for my in 0..<dist.first!.count {
       for mx in 0..<dist.count {
-        #if PRINT
+        #if PRINT_PATHFINDING
         var colored = true
         if cx == mx && cy == my {
           ld += col_g
@@ -191,25 +191,25 @@ func move(_ map: inout [[Tile]], _ x: Int, _ y: Int) -> Node? {
           if d < mind || (d == mind && (my < miny || (my == miny && mx < minx))) {
             (minx, miny, mind) = (mx, my, d)
           }
-          #if PRINT
+          #if PRINT_PATHFINDING
           ld += d == Int.max ? "X" : "\(d)"
           #endif
         } else {
-          #if PRINT
+          #if PRINT_PATHFINDING
           ld += dist[mx][my] == -1 ? "." : "\(dist[mx][my])"
           #endif
         }
-        #if PRINT
+        #if PRINT_PATHFINDING
         if colored {
           ld += col_0
         }
         #endif
       }
-      #if PRINT
+      #if PRINT_PATHFINDING
       ld += "\n"
       #endif
     }
-    #if PRINT
+    #if PRINT_PATHFINDING
     print(ld)
     let _ = readLine()
     #endif
@@ -286,9 +286,11 @@ do {
       break
     }
     turn += 1
-    //let _ = readLine()
-    //print("Turn \(turn)")
-    //printmap(map: map)
+    #if PRINT_TURNS
+    let _ = readLine()
+    print("Turn \(turn)")
+    printmap(map: map)
+    #endif
   } while true
   print("Turn \(turn)")
   printmap(map: map)
